@@ -15,21 +15,51 @@ class Form extends React.Component {
         console.log(this.state);
         //THIS IS THE DATA TO SEND 
     }
-
-    handleInput = (event) => {
-        const newGroup = {...this.state}
-        const newElement = {...newGroup.members[event.target.id]}
-        
-        newElement[event.target.name] = event.target.value;
-        newGroup.members[event.target.id] = newElement;
-
+    updateForm = (event) =>{
+        event.preventDefault();
+        const newGroup =  event.target.value;
+       
         this.setState({
-            state : newGroup 
+            groupName: newGroup
+        });
+    }
+
+    handleInput = (event, name) => {
+        const newGroup = this.state.members.map((item => {
+            if (item.id = event.target.id) {
+                return {
+                    ...item,
+                    [name]: event.target.value
+                }
+            } else {
+              return item;
+            }
+        }))
+    
+        this.setState({
+            members : newGroup 
         })
     }
+    // handleInput = (event, name) => {
+
+    //     this.setState(prevState => ({
+    //         members : prevState.members.map((item) => {
+    //           if (item.id = event.target.id) {
+    //               return {
+    //                   ...item,
+    //                   [name]: event.target.value
+    //               }
+    //           } else {
+    //             return item;
+    //           }
+    //        }) 
+    //    }))
+    // }
+
+    
+
     addPerson(event){
         event.preventDefault()
-        console.log("click");
         this.setState({
             members: [...this.state.members, {name:"", email:"", id:uuid.v4()}]
         })
@@ -40,25 +70,24 @@ class Form extends React.Component {
             <div>
                 <form onSubmit={this.handleSubmit}>
                     <div>Group Name</div>
-                    {/* <TextField 
+                    <TextField 
                         id={uuid.v4()}
-                        name={this.state.groupName}
                         placeholder="Enter Group"
-                        onChange={(event, id) => this.handleInput(event, id)}/>    
-                    <div>League Names</div> */}
+                        onChange={(event, id) => this.updateForm(event, id)}/>    
+                    <div>League Names</div>
                     {this.state.members.map((member) => {
                         return (
                             <div key={member.id}>
                                 <TextField
-                                    name={member.name}
+                                    
                                     id={member.id}
                                     placeholder="Enter your name..."
-                                    onChange={(event) => this.handleInput(event, member.id)} />
+                                    onChange={(event) => this.handleInput(event, "name")} />
                                 <TextField
-                                    name={member.email}
+                                  
                                     id={member.id}
                                     placeholder="Enter your email"
-                                    onChange={(event) => this.handleInput(event, member.id)} 
+                                    onChange={(event) => this.handleInput(event, "email")} 
                                     />
                             </div>
                         )
